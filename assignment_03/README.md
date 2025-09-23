@@ -1,21 +1,26 @@
 # Assignment 03
-```bash
+```text
 parallel-local-to-hdfs-copy
 .
+├── build
+│   └── classes
+│       └── bdpuh
+│           └── hw03
+│               └── ParallelLocalToHdfsCopy.class
 ├── README.md
 ├── src
-│   └── main
-│       └── java
-│           └── bdpuh
-│               └── hw03
-│                   └── ParallelLocalToHdfsCopy.java
+│   └── main
+│       └── java
+│           └── bdpuh
+│               └── hw03
+│                   └── ParallelLocalToHdfsCopy.java
 └── target
     └── parallel-local-to-hdfs-copy-1.0.0.jar
 
 ```
 # Overview
 
-ParallelLocalToHdfsCopy copies files from a local source directory to an HDFS destination directory in parallel, and compresses each file as .gz during transfer. 
+ParallelLocalToHdfsCopy copies files from a local source path to an HDFS destination path in parallel, and compresses each file as .gz during transfer. 
 
 Program requirements:
 
@@ -25,7 +30,7 @@ Program requirements:
     - absolute HDFS destination path
     - number of threads
 - rules
-    - local source must exist, else return "Source directory does not exist" and exit.
+    - local source must exist, else return "Source path does not exist" and exit.
     - HDFS destination path must not exist, else return "Destination path already exists. Please delete before running the program" and exit.
 - copy files in parallel and compress to .gz file
 - ignore local source path subdirectories
@@ -56,8 +61,10 @@ jar cfe target/parallel-local-to-hdfs-copy-1.0.0.jar \
 ```bash
 NN=$(hdfs getconf -confKey fs.defaultFS)
 DEST=/user/hdadmin/hw03_out_$(date +%s)
-hdfs dfs -test -e "$DEST" && echo "exists" || echo "does not exist"
+hdfs dfs -test -e "$DEST" && echo "exists" || echo "$DEST path does not exist in Hadoop HDFS"
 mkdir -p /home/hdadmin/local-src
+echo ${NN}
+echo ${DEST}
 
 ```
 
@@ -67,8 +74,7 @@ for i in $(seq 1 10); do echo "file $i - $(date)" > /home/hdadmin/local-src/file
 ls -l /home/hdadmin/local-src
 ```
 
-
-# copy parallel with 4 threads
+# parallel copy with 4 threads
 ```bash
 java -cp target/parallel-local-to-hdfs-copy-1.0.0.jar:$(hadoop classpath) \
   bdpuh.hw03.ParallelLocalToHdfsCopy \

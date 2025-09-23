@@ -19,7 +19,7 @@ public class ParallelLocalToHdfsCopy {
 
     public static void main(String[] args) throws Exception {
         if (args.length != 3) {
-            System.err.println("Usage: ParallelLocalToHdfsCopy <localSrcDir> <hdfsDestDir> <threads>");
+            System.err.println("Usage: ParallelLocalToHdfsCopy <localSrcPath> <hdfsDestPath> <threads>");
             System.exit(1);
         }
 
@@ -28,7 +28,7 @@ public class ParallelLocalToHdfsCopy {
         final int threads = Integer.parseInt(args[2]);
 
         if (!Files.exists(localSrc) || !Files.isDirectory(localSrc)) {
-            System.err.println("Source directory does not exist");
+            System.err.println("Error: Source path does not exist");
             System.exit(2);
         }
 
@@ -37,11 +37,11 @@ public class ParallelLocalToHdfsCopy {
         Path hdfsDest = new Path(hdfsDestStr);
 
         if (fs.exists(hdfsDest)) {
-            System.err.println("Destination directory already exists. Please delete before running the program");
+            System.err.println("Error: Destination path already exists.");
             System.exit(3);
         }
         if (!fs.mkdirs(hdfsDest)) {
-            System.err.println("Failed to create destination directory on HDFS: " + hdfsDest);
+            System.err.println("Error: Not able to create destination path on HDFS: " + hdfsDest);
             System.exit(4);
         }
 
@@ -51,7 +51,7 @@ public class ParallelLocalToHdfsCopy {
         }
 
         if (files.isEmpty()) {
-            System.out.println("No regular files found to copy.");
+            System.out.println("No files found to copy.");
             System.exit(0);
         }
 
@@ -74,10 +74,10 @@ public class ParallelLocalToHdfsCopy {
                         gz.write(buf, 0, n);
                     }
                     gz.finish();
-                    System.out.println("Copied & compressed: " + f + " -> " + destFile);
+                    System.out.println("Finished: " + f + " -> " + destFile);
                     return destFile.toString();
                 } catch (Exception e) {
-                    System.err.println("Failed copying " + f + ": " + e.getMessage());
+                    System.err.println("Failed on " + f + ": " + e.getMessage());
                     throw e;
                 }
             });
