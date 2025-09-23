@@ -84,3 +84,10 @@ java -cp target/parallel-local-to-hdfs-copy-1.0.0.jar:$(hadoop classpath) \
 
 hdfs dfs -ls "$DEST"
 ```
+
+# zip assignment for submission
+```bash
+zip -r ../assignment_03.zip . \
+  -x "build/*" ".git/*" ".idea/*" ".vscode/*" "*~" "*.class" ".DS_Store"
+
+```
